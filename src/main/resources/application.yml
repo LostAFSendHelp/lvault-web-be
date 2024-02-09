@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: "jdbc:mysql://${MYSQL_HOST:localhost}:1001/lvault_db"
+    username: lvault
+    password: lvault_pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
