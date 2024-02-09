@@ -1,35 +1,82 @@
 package com.example.lostaf.lvaultweb.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.example.lostaf.lvaultweb.entities.Vault;
+import com.example.lostaf.lvaultweb.exceptions.BadRequestException;
+import com.example.lostaf.lvaultweb.exceptions.DataNotFoundException;
+import com.example.lostaf.lvaultweb.models.Result;
 import com.example.lostaf.lvaultweb.repositories.VaultRepository;
+import com.example.lostaf.lvaultweb.utils.StringUtils;
+
+import io.micrometer.common.lang.NonNull;
 
 @Controller
-@RequestMapping(path = "/vaults")
 public class MainController {
     
     @Autowired
     private VaultRepository vaultRepository;
 
-    @PostMapping(path = "/add")
-    public @ResponseBody String addNewVault(
-        @RequestParam String name
+    @PostMapping("vaults/add")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @ResponseBody Result<Vault> addNewVault(
+        @RequestParam @NonNull String name
     ) {
+        String vaultName = name.trim();
+
+        if (vaultName == null || vaultName.isEmpty() || !StringUtils.isAlphanumeric(vaultName)) {
+            throw new BadRequestException();
+        }
+
         Vault vault = new Vault();
         vault.setName(name);
         vaultRepository.save(vault);
-        return vault.getId().toString();
+        
+        return Result.<Vault>builder()
+            .isSuccess(true)
+            .data(vault)
+            .statusCode(HttpStatus.CREATED)
+            .build();
     }
 
-    @GetMapping
-    public @ResponseBody Iterable<Vault> getAllVaults() {
-        return vaultRepository.findAll();
+    @GetMapping("vault/{id}")
+    @ResponseStatus(HttpStatus.FOUND)
+    public @ResponseBody Result<List<Vault>> getMethodName(
+        @PathVariable("id") Integer param
+    ) {
+        List<Vault> vaults = vaultRepository.findAllById(List.of(param));
+
+        if (vaults.isEmpty()) {
+            throw new DataNotFoundException();
+        }
+
+        return Result.<List<Vault>>builder()
+            .isSuccess(true)
+            .statusCode(HttpStatus.FOUND)
+            .data(vaults)
+            .build();
+    }
+    
+
+    @GetMapping("vaults")
+    @ResponseStatus(HttpStatus.FOUND)
+    public @ResponseBody Result<List<Vault>> getAllVaults() {
+        List<Vault> data = vaultRepository.findAll();
+
+        return Result.<List<Vault>>builder()
+            .isSuccess(true)
+            .data(data)
+            .statusCode(HttpStatus.FOUND)
+            .build();
     }
 }
