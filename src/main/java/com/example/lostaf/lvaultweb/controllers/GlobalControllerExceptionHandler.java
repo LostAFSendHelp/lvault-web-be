@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.example.lostaf.lvaultweb.exceptions.BadRequestException;
 import com.example.lostaf.lvaultweb.exceptions.DataNotFoundException;
+import com.example.lostaf.lvaultweb.exceptions.DuplicatedException;
 import com.example.lostaf.lvaultweb.models.Result;
 
 @ControllerAdvice
@@ -39,6 +40,16 @@ public class GlobalControllerExceptionHandler {
         return Result.builder()
             .isSuccess(false)
             .statusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+            .build();
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DuplicatedException.class)
+    public @ResponseBody Result handleDuplicated(DuplicatedException exception) {
+        return Result.builder()
+            .isSuccess(false)
+            .statusCode(HttpStatus.CONFLICT)
+            .message(exception.getCustomMessage())
             .build();
     }
 }
