@@ -58,7 +58,7 @@ public class MainController {
     }
 
     @GetMapping("vault/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Result<List<Vault>> getMethodName(
         @PathVariable("id") Integer param
     ) {
@@ -70,21 +70,21 @@ public class MainController {
 
         return Result.<List<Vault>>builder()
             .isSuccess(true)
-            .statusCode(HttpStatus.FOUND)
+            .statusCode(HttpStatus.OK)
             .data(vaults)
             .build();
     }
     
 
     @GetMapping("vaults")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Result<List<Vault>> getAllVaults() {
         List<Vault> data = vaultRepository.findAll();
 
         return Result.<List<Vault>>builder()
             .isSuccess(true)
             .data(data)
-            .statusCode(HttpStatus.FOUND)
+            .statusCode(HttpStatus.OK)
             .build();
     }
 
