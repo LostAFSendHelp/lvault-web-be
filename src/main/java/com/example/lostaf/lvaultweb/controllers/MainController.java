@@ -1,6 +1,7 @@
 package com.example.lostaf.lvaultweb.controllers;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,7 @@ public class MainController {
     @GetMapping("vault/{id}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Result<List<Vault>> getMethodName(
-        @PathVariable("id") Integer param
+        @PathVariable("id") UUID param
     ) {
         List<Vault> vaults = vaultRepository.findAllById(List.of(param));
 
@@ -91,7 +92,7 @@ public class MainController {
     @DeleteMapping("vault/{id}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Result<Boolean> deleteVault(
-        @PathVariable @NonNull Integer id
+        @PathVariable @NonNull UUID id
     ) {
         vaultRepository.deleteById(id);
         return Result.<Boolean>builder()
@@ -103,7 +104,7 @@ public class MainController {
     @PatchMapping("vault/{id}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Result<Boolean> updateNameById(
-        @PathVariable @NonNull Integer id,
+        @PathVariable @NonNull UUID id,
         @RequestParam @NonNull String name
     ) {
         String vaultName = name.trim();

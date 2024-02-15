@@ -10,6 +10,8 @@ services:
       - MYSQL_PASSWORD=lvault_pass
       - MYSQL_DATABASE=lvault_db
       - MYSQL_ROOT_PASSWORD=lvault_root_pass
+    command: 
+      - --skip-log-bin
 
   console:
     image: adminer:latest
