@@ -5,15 +5,14 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.lostaf.lvaultweb.entities.Vault;
 import com.example.lostaf.lvaultweb.exceptions.BadRequestException;
@@ -25,7 +24,7 @@ import com.example.lostaf.lvaultweb.utils.StringUtils;
 
 import io.micrometer.common.lang.NonNull;
 
-@Controller
+@RestController
 public class MainController {
     
     @Autowired
@@ -33,7 +32,7 @@ public class MainController {
 
     @PostMapping("vaults/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Result<Vault> addNewVault(
+    public Result<Vault> addNewVault(
         @RequestParam @NonNull String name
     ) {
         String vaultName = name.trim();
@@ -49,7 +48,8 @@ public class MainController {
 
         Vault vault = new Vault();
         vault.setName(name);
-        vaultRepository.save(vault);
+        vault = vaultRepository.save(vault);
+        vaultRepository.refresh(vault);
         
         return Result.<Vault>builder()
             .isSuccess(true)
@@ -60,7 +60,7 @@ public class MainController {
 
     @GetMapping("vault/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Result<List<Vault>> getMethodName(
+    public Result<List<Vault>> getMethodName(
         @PathVariable("id") UUID param
     ) {
         List<Vault> vaults = vaultRepository.findAllById(List.of(param));
@@ -79,7 +79,7 @@ public class MainController {
 
     @GetMapping("vaults")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Result<List<Vault>> getAllVaults() {
+    public Result<List<Vault>> getAllVaults() {
         List<Vault> data = vaultRepository.findAll();
 
         return Result.<List<Vault>>builder()
@@ -91,7 +91,7 @@ public class MainController {
 
     @DeleteMapping("vault/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Result<Boolean> deleteVault(
+    public Result<Boolean> deleteVault(
         @PathVariable @NonNull UUID id
     ) {
         vaultRepository.deleteById(id);
@@ -103,7 +103,7 @@ public class MainController {
 
     @PatchMapping("vault/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Result<Boolean> updateNameById(
+    public Result<Boolean> updateNameById(
         @PathVariable @NonNull UUID id,
         @RequestParam @NonNull String name
     ) {
