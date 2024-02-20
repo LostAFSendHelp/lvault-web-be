@@ -27,7 +27,7 @@ public class LvaultWebApplication {
 					.allowedOrigins("http://localhost:5173");
 
 				registry
-					.addMapping("/vault/**")
+					.addMapping("/login/**")
 					.allowedOrigins("http://localhost:5173");
 			}
 		};

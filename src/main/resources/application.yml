@@ -7,3 +7,14 @@ spring:
     username: lvault
     password: lvault_pass
     driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: d73ea65a13979de2d690
+            clientSecret: 432bf38f6db73af695bab64d848e93fc433b74e1
+          google:
+            client-id: 114782663173-6pehk02klroh7np5vkujdgvv8g2fhtlk.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/login/oauth2/google/callback

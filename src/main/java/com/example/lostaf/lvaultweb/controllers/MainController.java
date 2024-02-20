@@ -30,6 +30,12 @@ public class MainController {
     @Autowired
     private VaultRepository vaultRepository;
 
+    @GetMapping("/")
+    public String getMethodName() {
+        return "Welcome";
+    }
+    
+
     @PostMapping("vaults/add")
     @ResponseStatus(HttpStatus.CREATED)
     public Result<Vault> addNewVault(

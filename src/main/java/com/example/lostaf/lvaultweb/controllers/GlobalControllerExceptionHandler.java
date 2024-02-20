@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.example.lostaf.lvaultweb.exceptions.BadRequestException;
 import com.example.lostaf.lvaultweb.exceptions.DataNotFoundException;
 import com.example.lostaf.lvaultweb.exceptions.DuplicatedException;
+import com.example.lostaf.lvaultweb.exceptions.UnauthorizedException;
 import com.example.lostaf.lvaultweb.models.Result;
 
 @ControllerAdvice
@@ -50,6 +51,16 @@ public class GlobalControllerExceptionHandler {
             .isSuccess(false)
             .statusCode(HttpStatus.CONFLICT)
             .message(exception.getCustomMessage())
+            .build();
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public @ResponseBody Result handleUnauthorized(UnauthorizedException exception) {
+        return Result.builder()
+            .isSuccess(false)
+            .statusCode(HttpStatus.UNAUTHORIZED)
+            .message("Unauthorized")
             .build();
     }
 }
