@@ -7,3 +7,18 @@ spring:
     username: lvault
     password: lvault_pass
     driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: lvault
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:1003/realms/my-realm
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:1003/realms/my-realm
